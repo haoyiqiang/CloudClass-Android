@@ -1,19 +1,12 @@
 package io.agora.agoraeduuikit.whiteboard
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import androidx.core.content.ContextCompat
 import com.herewhite.sdk.*
 import com.herewhite.sdk.domain.*
-import com.herewhite.sdk.window.SlideListener
 import io.agora.agoraeducore.core.internal.base.PreferenceManager
-import io.agora.agoraeducore.core.internal.base.ToastManager
 import io.agora.agoraeducore.core.internal.education.impl.Constants
 import io.agora.agoraeducore.core.internal.framework.utils.GsonUtil
 import io.agora.agoraeducore.core.internal.log.LogX
-import io.agora.agoraeduuikit.R
-import io.agora.agoraeduuikit.component.toast.AgoraUIToast
 import io.agora.agoraeduuikit.impl.whiteboard.AudioMixerBridgeImpl
 import io.agora.agoraeduuikit.impl.whiteboard.FcrWhiteboardConverter
 import io.agora.agoraeduuikit.impl.whiteboard.WhiteBoardAudioMixingBridgeListener
@@ -32,19 +25,20 @@ import java.lang.reflect.Proxy
  * date : 2022/6/7
  * description :
  */
-class FcrBoardRoom(var whiteBoardView: WhiteboardView) : SlideListener {
+class FcrBoardRoom(var whiteBoardView: WhiteboardView) : SlideListener  {
     var whiteBoardSDKLog: FcrBoardSDKLog = FcrBoardSDKLog()
     lateinit var whiteSdk: WhiteSdk
     var context: Context = whiteBoardView.context
     var roomParams: RoomParams? = null
     val TAG = "WhiteBoardSDK"
+    var retryTime = 0
+    val handler = Handler(Looper.getMainLooper())
     var roomListener: FcrBoardRoomListener? = null
         set(value) {
             whiteBoardSDKLog.roomListener = value
             field = value
         }
-    var retryTime = 0
-    val handler = Handler(Looper.getMainLooper())
+
     var mixingBridgeListener: ((AgoraBoardInteractionPacket) -> Unit)? = null
 
     val boardRoom = Proxy.newProxyInstance(BoardRoom::class.java.classLoader, arrayOf(BoardRoom::class.java),
@@ -66,6 +60,30 @@ class FcrBoardRoom(var whiteBoardView: WhiteboardView) : SlideListener {
                 }
             }
         }) as BoardRoom
+
+    fun init(whiteBoardAppId: String, region: String?) {
+        WhiteDisplayerState.setCustomGlobalStateClass(BoardState::class.java)
+        val isDebugMode = PreferenceManager.get(Constants.KEY_SP_USE_OPEN_TEST_MODE, false)
+        if (isDebugMode) {
+            DWebView.setWebContentsDebuggingEnabled(true)
+        }
+
+        val configuration = WhiteSdkConfiguration(whiteBoardAppId, true)
+        configuration.isEnableIFramePlugin = true
+        configuration.isUserCursor = true
+        configuration.region = FcrWhiteboardConverter.convertStringToRegion(region)
+        configuration.useMultiViews = true
+        configuration.isEnableAppliancePlugin = true;
+
+        whiteSdk = WhiteSdk(
+            whiteBoardView,
+            context,
+            configuration,
+            whiteBoardSDKLog,
+            AudioMixerBridgeImpl(whiteboardMixingBridgeListener)
+        )
+        whiteSdk.setSlideListener(this);
+    }
 
     override fun onSlideError(
         errorType: SlideErrorType?,
@@ -99,30 +117,6 @@ class FcrBoardRoom(var whiteBoardView: WhiteboardView) : SlideListener {
         ContextCompat.getMainExecutor(whiteBoardView.context).execute{
             ToastManager.showShort(context.getString(R.string.fcr_board_slide_retry) + this.retryTime + "/5")
         }
-    }
-
-    fun init(whiteBoardAppId: String, region: String?) {
-        WhiteDisplayerState.setCustomGlobalStateClass(BoardState::class.java)
-        val isDebugMode = PreferenceManager.get(Constants.KEY_SP_USE_OPEN_TEST_MODE, false)
-        if (isDebugMode) {
-            DWebView.setWebContentsDebuggingEnabled(true)
-        }
-
-        val configuration = WhiteSdkConfiguration(whiteBoardAppId, true)
-        configuration.isEnableIFramePlugin = true
-        configuration.isUserCursor = true
-        configuration.region = FcrWhiteboardConverter.convertStringToRegion(region)
-        configuration.useMultiViews = true
-        configuration.isEnableAppliancePlugin = true;
-        
-        whiteSdk = WhiteSdk(
-            whiteBoardView,
-            context,
-            configuration,
-            whiteBoardSDKLog,
-            AudioMixerBridgeImpl(whiteboardMixingBridgeListener)
-        )
-        whiteSdk.setSlideListener(this);
     }
 
     fun join(config: FcrBoardRoomJoinConfig) {
