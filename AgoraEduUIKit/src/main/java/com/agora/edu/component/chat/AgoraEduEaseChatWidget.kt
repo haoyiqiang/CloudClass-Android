@@ -243,7 +243,7 @@ class AgoraEduEaseChatWidget : ChatPopupWidget(), InputMsgListener, ChatPagerLis
             mChatRoomId = it["chatRoomId"] as? String ?: mChatRoomId
             appKey = it["appKey"] as? String ?: ""
             val chatGroup = it["chatGroup"] as? MutableMap<*, *>
-            _chatGroupMap = chatGroup?.get("group") as? MutableMap<*, *>
+            _chatGroupMap = chatGroup?.get("groups") as? MutableMap<*, *>
             role = this.widgetInfo?.localUserInfo?.userRole ?: EaseConstant.ROLE_STUDENT
             EaseRepository.instance.role = role
         }
