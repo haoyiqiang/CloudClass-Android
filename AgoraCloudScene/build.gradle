@@ -64,7 +64,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.2.2" // for ide hint
 
     if (readyPublishGithub.toBoolean()) {
-        compileOnly "io.github.agoraio-community:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
+        compileOnly "io.github.agora-apaas:AgoraEduCore:2.8.103"
     } else {
         implementation project(path: ':AgoraEduCore')
     }
