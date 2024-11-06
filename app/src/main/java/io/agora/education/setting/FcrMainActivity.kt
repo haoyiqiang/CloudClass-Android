@@ -617,16 +617,17 @@ class FcrMainActivity : BaseActivity(), View.OnClickListener {
         val roomType = getRoomType(type)
         val roleType = getRoleType(roleTypeStr)
 //        val roomUuid = roomName.plus(roomType)
-        val roomUuid = HashUtil.md5(roomName).plus(roomType).lowercase()
-        val userUuid = HashUtil.md5(userName).plus(roleType).lowercase()
+
+//        val roomUuid = HashUtil.md5(roomName).plus(roomType).lowercase()
+//        val userUuid = HashUtil.md5(userName).plus(roleType).lowercase()
         val roomRegion = getRoomRegion(regionStr)
         val videoStreamKey: String = edVideoStreamKey.text.toString()
 
         ConfigUtil.getV3Config(
             AppHostUtil.getAppHostUrl(roomRegion),
-            roomUuid,
+            roomName,
             roleType,
-            userUuid,
+            userName,
             object : EduCallback<ConfigData> {
                 override fun onSuccess(info: ConfigData?) {
                     // Use authentication info from server instead
@@ -640,9 +641,9 @@ class FcrMainActivity : BaseActivity(), View.OnClickListener {
 
                         val config = AgoraEduLaunchConfig(
                             userName,
-                            userUuid,
+                            userName,
                             roomName,
-                            roomUuid,
+                            roomName,
                             roleType,
                             roomType,
                             it.token,
