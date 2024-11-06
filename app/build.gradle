@@ -47,10 +47,6 @@ android {
         jvmTarget = "1.8"
     }
 
-    kotlin {
-        jvmToolchain(17)
-    }
-
     packagingOptions {
         exclude 'META-INF/edu_release.kotlin_module'
     }
@@ -63,6 +59,7 @@ android {
     viewBinding {
         enabled = true
     }
+    namespace 'io.agora.education'
 }
 
 static def releaseTime() {
@@ -83,8 +80,7 @@ dependencies {
     implementation project(path: ':AgoraClassSDK')
     implementation project(path: ':AgoraEduUIKit')
     if (readyPublishGithub.toBoolean()) {
-        compileOnly "io.github.agora-apaas:AgoraEduCore:2.8.103"
-//        compileOnly "io.github.agoraio-community:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
+        implementation "io.github.agora-apaas:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
     } else {
         implementation project(path: ':AgoraEduCore')
     }

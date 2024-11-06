@@ -46,15 +46,18 @@ class EaseRepository {
      */
     fun loadMessages() {
         if (isInit) {
-            val conversation = ChatClient.getInstance().chatManager()
-                    .getConversation(chatRoomId, Conversation.ConversationType.ChatRoom, true)
-            val msgList = conversation?.allMessages
             val norMsgList = mutableListOf<ChatMessage>()
-            msgList?.forEach { message ->
-                val msgType = message.getIntAttribute(EaseConstant.MSG_TYPE, EaseConstant.NORMAL_MSG)
-                if (msgType == EaseConstant.NORMAL_MSG)
-                    norMsgList.add(message)
+            recvRoomIds.forEach { roomId->
+                val conversation = ChatClient.getInstance().chatManager()
+                    .getConversation(roomId, Conversation.ConversationType.ChatRoom, true)
+                val msgList = conversation?.allMessages
+                msgList?.forEach { message ->
+                    val msgType = message.getIntAttribute(EaseConstant.MSG_TYPE, EaseConstant.NORMAL_MSG)
+                    if (msgType == EaseConstant.NORMAL_MSG)
+                        norMsgList.add(message)
+                }
             }
+            norMsgList.sortBy { msg-> msg.msgTime}
             for (listener in listeners) {
                 listener.loadMessageFinish(norMsgList)
             }
@@ -62,8 +65,10 @@ class EaseRepository {
     }
 
 
+
+
     suspend fun getHistoryMsgs(roomId:String):List<ChatMessage> = suspendCoroutine { cont ->
-        ChatClient.getInstance().chatManager().asyncFetchHistoryMessage(chatRoomId, Conversation.ConversationType.ChatRoom, 50, "", object : ValueCallBack<CursorResult<ChatMessage>> {
+        ChatClient.getInstance().chatManager().asyncFetchHistoryMessage(roomId, Conversation.ConversationType.ChatRoom, 50, "", object : ValueCallBack<CursorResult<ChatMessage>> {
             override fun onSuccess(value: CursorResult<ChatMessage>?) {
                 cont.resume(value?.data ?: emptyList())
             }

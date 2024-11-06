@@ -19,8 +19,6 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode rootProject.ext.ClassSDK.versionCode
-        versionName rootProject.ext.ClassSDK.versionName
 
         consumerProguardFiles "consumer-rules.pro"
 
@@ -43,6 +41,7 @@ android {
     viewBinding {
         enabled = true
     }
+    namespace 'io.agora.agoraclasssdk'
 }
 
 dependencies {
@@ -55,7 +54,7 @@ dependencies {
 
     compileOnly project(path: ':AgoraEduUIKit')
     if (readyPublishGithub.toBoolean()) {
-        compileOnly "io.github.agora-apaas:AgoraEduCore:2.8.103"
+        compileOnly "io.github.agora-apaas:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
     } else {
         implementation project(path: ':AgoraEduCore')
     }
