@@ -83,7 +83,8 @@ dependencies {
     implementation project(path: ':AgoraClassSDK')
     implementation project(path: ':AgoraEduUIKit')
     if (readyPublishGithub.toBoolean()) {
-        implementation "io.github.agoraio-community:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
+        compileOnly "io.github.agora-apaas:AgoraEduCore:2.8.103"
+//        compileOnly "io.github.agoraio-community:AgoraEduCore:${rootProject.ext.dependencies.EduCore}"
     } else {
         implementation project(path: ':AgoraEduCore')
     }
