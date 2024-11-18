@@ -520,6 +520,7 @@ class ChatViewPager(context: Context, attributeSet: AttributeSet?, defStyleAttr:
                 info.avatarUrl = avatarUrl
                 val extJson = JSONObject()
                 extJson.put(EaseConstant.ROLE, EaseConstant.ROLE_STUDENT)
+                extJson.put(EaseConstant.CHAT_GROUP_UUIDS, chatGroupUuids)
                 info.ext = extJson.toString()
                 EaseRepository.instance.updateOwnInfo(info)
                 joinChatRoom()
