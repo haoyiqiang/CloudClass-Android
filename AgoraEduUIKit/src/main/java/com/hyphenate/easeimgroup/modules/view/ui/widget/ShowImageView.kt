@@ -32,7 +32,7 @@ class ShowImageView(context: Context, attributeSet: AttributeSet?, defStyleAttr:
     }
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.fcr_show_image_layout, this)
+        LayoutInflater.from(context).inflate(R.layout.fcr_group_show_image_layout, this)
         initView()
     }
 

@@ -5,7 +5,7 @@
     android:background="#80000000"
     >
 
-    <com.hyphenate.easeim.modules.view.ui.widget.photoview.EasePhotoView
+    <com.hyphenate.easeimgroup.modules.view.ui.widget.photoview.EasePhotoView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

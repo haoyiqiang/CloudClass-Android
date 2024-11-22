@@ -116,7 +116,7 @@ class AgoraEduEaseChatGroupWidget : ChatPopupWidget(), InputMsgListener, ChatPag
 
     override fun init(container: ViewGroup) {
         super.init(container)
-        LogX.e(TAG, ">>> AgoraEduEaseChatGroupWidget init")
+        LogX.i(TAG, ">>>ChatGroupWidget init")
 
         mContext = container.context
 
