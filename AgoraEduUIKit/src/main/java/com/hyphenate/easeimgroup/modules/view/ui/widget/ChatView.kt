@@ -28,6 +28,7 @@ import io.agora.chat.ChatRoom
 import io.agora.util.EMLog
 import io.agora.util.VersionUtils
 
+
 /**
  * 聊天页
  */
@@ -55,6 +56,7 @@ class ChatView(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int)
     private lateinit var muteIcon: AppCompatImageView
     private lateinit var unMuteIcon: AppCompatImageView
     private var inputContent = ""
+
 
     var viewEventListener: ViewEventListener? = null
     var uiAgoraChatConfig: FcrAgoraChatUIConfig? = null
@@ -174,6 +176,7 @@ class ChatView(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int)
 
     override fun loadHistoryMessageFinish() {
         refresh()
+
     }
 
     override fun fetchAnnouncementFinish(announcement: String) {

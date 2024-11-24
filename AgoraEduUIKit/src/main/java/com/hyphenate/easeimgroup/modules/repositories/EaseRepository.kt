@@ -108,7 +108,6 @@ class EaseRepository {
                     when (body.action()) {
                         EaseConstant.SET_ALL_MUTE, EaseConstant.REMOVE_ALL_MUTE -> {
                             notifyBody.params = mutableMapOf(Pair(EaseConstant.OPERATION, body.action()))
-
                         }
                         EaseConstant.DEL -> {
                             val msgId = message.getStringAttribute(EaseConstant.MSG_ID, "")
@@ -132,6 +131,40 @@ class EaseRepository {
                     ChatClient.getInstance().chatManager().saveMessage(notifyMessage)
                 }
             }
+
+            val lastCmdMsg = msgs.sortedBy { it.msgTime }.filter { msg ->
+                if(msg.type != ChatMessage.Type.CMD){
+                    return@filter false
+                }
+                val body = msg.body as CmdMessageBody
+                return@filter body.action() == EaseConstant.SET_ALL_MUTE || body.action() == EaseConstant.REMOVE_ALL_MUTE || body.action() == EaseConstant.MUTE || body.action() == EaseConstant.UN_MUTE
+            }.lastOrNull()
+
+            if(lastCmdMsg != null){
+                val body = lastCmdMsg.body as CmdMessageBody
+                when (body.action()) {
+                    EaseConstant.SET_ALL_MUTE, EaseConstant.REMOVE_ALL_MUTE -> {
+                        val isMuted = body.action() == EaseConstant.SET_ALL_MUTE
+                        allMuted = isMuted
+                        for (listener in listeners) {
+                            listener.fetchChatRoomMutedStatus(isMuted)
+                        }
+                    }
+                    EaseConstant.MUTE, EaseConstant.UN_MUTE -> {
+                        val member = lastCmdMsg.getStringAttribute(EaseConstant.MUTE_MEMEBER, "")
+                        if (member.equals(userName)){
+                            val isMuted = body.action() == EaseConstant.MUTE
+                            singleMuted = isMuted
+
+                            for (listener in listeners) {
+                                listener.fetchChatRoomMutedStatus(isMuted)
+                            }
+                        }
+
+                    }
+                }
+            }
+
             ThreadManager.instance.runOnMainThread {
                 val conversation = ChatClient.getInstance().chatManager().getConversation(chatRoomId, Conversation.ConversationType.ChatRoom, true)
                 conversation.loadMoreMsgFromDB("", 50)

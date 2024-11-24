@@ -46,7 +46,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class ChatViewPager(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) : LinearLayout(context, attributeSet, defStyleAttr), MessageListener, ChatRoomChangeListener, ViewEventListener, ConnectionListener {
+class ChatViewPager(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) : LinearLayout(context, attributeSet, defStyleAttr), MessageListener, ChatRoomChangeListener, ViewEventListener, ConnectionListener{
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 
@@ -852,4 +852,5 @@ class ChatViewPager(context: Context, attributeSet: AttributeSet?, defStyleAttr:
     fun setChatGroupUuids(chatGroupUuids: List<String>) {
         this.chatGroupUuids = chatGroupUuids
     }
+
 }
